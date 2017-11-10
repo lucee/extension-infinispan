@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="clean" basedir="." name="formtag-extension">
+  <description>
+        Build modern Extension
+    </description>
+   
+
+  <import file="build-compile.xml"/>
+
+
+  <scriptdef name="replace" language="javascript">
+     <attribute name="haystack" />
+     <attribute name="needle" />
+     <attribute name="repl" />
+     <attribute name="property" />
+     <![CDATA[
+      var text = attributes.get("haystack");
+      var needle = attributes.get("needle");
+      var repl = attributes.get("repl");
+      text=text.trim();
+      text=text.replace(needle,repl);
+      project.setProperty(attributes.get("property"), text);
+     ]]>
+  </scriptdef>
+
+
+
+
+  <target name="distModern" depends="compile" description="copy source file to temp" >
+    
+
+    <!-- Manifest of the extension -->
+    <echo file="${dist}/extension2/META-INF/MANIFEST.MF">Manifest-Version: 1.0
+Built-Date: ${NOW}
+version: "${bundleversion}${build.number}"
+id: "${id}"
+name: "${label}"
+description: "${description}"
+start-bundles: false
+lucee-core-version: "${luceeCoreVersion}”
+release-type: ${releaseType}
+cache: "[{'class':'${classRemote}','bundleName':'${bundlename}','bundleVersion':'${bundleversion}${build.number}'}]"
+</echo>
+
+
+    <!-- copy the jars necessary -->
+    <copy todir="${dist}/extension2/jars">
+      <fileset dir="${lib}">
+        <include name="**/*.jar"/>
+        <exclude name="**/javax.servlet.jar"/>
+        <exclude name="**/lucee*.jar"/>
+        <!-- EMBEDDED -->
+        <exclude name="**/org.infinispan.core-*.jar"/>
+        <exclude name="**/jboss-transaction-api_1.1_spec-*.jar"/>
+        <exclude name="**/org.lucee.metainf-services-*.jar"/>
+        <exclude name="**/org.jgroups-*.jar"/>
+      </fileset>
+    </copy>
+
+    <!-- copy the jar just build -->
+    <copy todir="${dist}/extension2/jars">
+      <fileset dir="${temp}/jars/">
+        <include name="**/*.jar"/>
+      </fileset>
+    </copy>
+    <move 
+      file="${dist}/extension2/jars/lucee-extension-${codename}.jar" 
+      tofile="${dist}/extension2/jars/lucee-extension-${codename}-${bundleversion}${build.number}.jar"/>
+    
+
+    <!-- remote driver -->
+    <loadfile property="content1" srcFile="${build}/context/admin/cdriver/${nameRemote}.cfc" />
+    <replace haystack="${content1}" needle="{class}" repl="${classRemote}" property="content2"/>
+    <replace haystack="${content2}" needle="{label}" repl="${labelRemote}" property="content3"/>
+    <replace haystack="${content3}" needle="{desc}" repl="${descriptionRemote}" property="content4"/>
+    <replace haystack="${content4}" needle="{bundlename}" repl="${bundlename}" property="content5"/>
+    <replace haystack="${content5}" needle="{bundleversion}" repl="${bundleversion}${build.number}" property="content6"/>
+    <echo message="${content6}" file="${dist}/extension2/context/admin/cdriver/${nameRemote}.cfc"/>
+
+
+
+    <!-- copy the logo -->
+    <copy todir="${dist}/extension2/META-INF">
+      <fileset dir="${build}/images">
+        <include name="logo.png"/>
+      </fileset>
+    </copy>
+
+
+
+    <!-- Zip everything  -->
+     <zip destfile="${dist}/modern/extension-${codename}-${bundleversion}${build.number}.lex">
+        <zipfileset dir="${dist}/extension2"/>
+    </zip>
+    
+  </target>
+
+
+  <target name="buildModern"  depends="distModern" description="clean up" >
+    <!-- <delete dir="${dist}/extension2"/> -->
+  </target>
+
+</project>

@@ -53,7 +53,7 @@
 
     <jar jarfile="${temp}/jars/lucee-extension-${codename}.jar" basedir="${temp}/classes" manifest="${src}/META-INF/MANIFEST.MF">
       <manifest>
-        <attribute name="Bundle-Version" value="${bundleversion}${build.number}"/>
+        <attribute name="Bundle-Version" value="${bundleversion}${build.number}${versionAppendix}"/>
         <attribute name="Built-Date" value="${NOW}"/>
         <attribute name="Bundle-SymbolicName" value="${bundlename}"/>
       </manifest>

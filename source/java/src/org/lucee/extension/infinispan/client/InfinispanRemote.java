@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.infinispan.client.hotrod.Flag;
 import org.infinispan.client.hotrod.MetadataValue;
 import org.infinispan.client.hotrod.RemoteCache;
+import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.lucee.extension.infinispan.CacheFactory;
 import org.lucee.extension.infinispan.MetaUtil;
 import org.lucee.extension.infinispan.TimespanGenerator;
@@ -15,6 +16,7 @@ import org.lucee.extension.infinispan.client.util.LuceeTimespanGenerator;
 import lucee.commons.io.cache.CacheEntry;
 import lucee.commons.io.cache.exp.CacheException;
 import lucee.loader.engine.CFMLEngineFactory;
+import lucee.loader.util.Util;
 import lucee.runtime.config.Config;
 import lucee.runtime.type.Struct;
 
@@ -24,6 +26,8 @@ public class InfinispanRemote extends InfinispanBasic {
 
 	private RemoteCache<Object, Object> cache;
 	private Struct args;
+
+	private String cachename;
 	
 	
 	
@@ -33,6 +37,7 @@ public class InfinispanRemote extends InfinispanBasic {
 		long defaultLive = toTimespam(arguments,"eternalLifetime","lifetime");
 		long defaultIdle = toTimespam(arguments,"eternalIdletime","idletime");
 		this.args=arguments;
+		this.cachename=CacheFactory.getCacheName(arguments, null);
 		super.init(defaultLive,defaultIdle);
 	}
 	
@@ -77,7 +82,11 @@ public class InfinispanRemote extends InfinispanBasic {
 	}
 
 	protected RemoteCache<Object, Object> getCache() {
-		if(cache==null) cache=CacheFactory.getRemoteCacheManager(args, false).getCache();
+		if(cache==null) {
+			RemoteCacheManager manager = CacheFactory.getRemoteCacheManager(args, false);
+			if(Util.isEmpty(cachename)) manager.getCache(); // no cache name defined
+			cache=manager.getCache(cachename);
+		}
 		else if(!cache.getRemoteCacheManager().isStarted()) {
 			cache.getRemoteCacheManager().start();
 		}

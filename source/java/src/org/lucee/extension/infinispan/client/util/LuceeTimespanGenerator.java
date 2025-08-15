@@ -12,6 +12,6 @@ public class LuceeTimespanGenerator implements TimespanGenerator {
 	}
 
 	public static TimeSpan createTimespan(long millis) { 
-		return CFMLEngineFactory.getInstance().getCastUtil().toTimespan(new Double(millis>0?(millis/86400000D):0),null); // days
+		return CFMLEngineFactory.getInstance().getCastUtil().toTimespan(Double.valueOf(millis>0?(millis/86400000D):0),null); // days
 	}
 }

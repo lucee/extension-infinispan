@@ -37,8 +37,8 @@ public class CacheEntryRemote implements CacheEntry {
 		}
 		
 		
-		//info.setEL("hit_count", new Double(hitCount()));
-		//info.setEL("size", new Double(size()));
+		//info.setEL("hit_count", Double.valueOf(hitCount()));
+		//info.setEL("size", Double.valueOf(size()));
 		Cast caster = CFMLEngineFactory.getInstance().getCastUtil();
 		
 		info.setEL("idle_time_span", LuceeTimespanGenerator.createTimespan(MetaUtil.idleTimeSpan(mdv)));		

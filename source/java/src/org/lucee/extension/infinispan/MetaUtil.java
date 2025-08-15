@@ -79,14 +79,14 @@ public class MetaUtil {
 			info.put("connection_pool_exhaust_action", "exception");
 		if(ea==ExhaustedAction.WAIT)
 			info.put("connection_pool_exhaust_action", "wait");
-		info.put("connection_pool_max_active", new Double(cp.maxActive()));
-		info.put("connection_pool_max_idle", new Double(cp.maxIdle()));
-		info.put("connection_pool_max_total", new Double(cp.maxTotal()));
-		info.put("connection_pool_max_wait", new Double(cp.maxWait()));
+		info.put("connection_pool_max_active", Double.valueOf(cp.maxActive()));
+		info.put("connection_pool_max_idle", Double.valueOf(cp.maxIdle()));
+		info.put("connection_pool_max_total", Double.valueOf(cp.maxTotal()));
+		info.put("connection_pool_max_wait", Double.valueOf(cp.maxWait()));
 		
 		info.put("connection_pool_min_evictable_idle_time",tsg.toTimespan(cp.minEvictableIdleTime()));
-		info.put("connection_pool_min_idle", new Double(cp.minIdle()));
-		info.put("connection_pool_tests_per_eviction_run", new Double(cp.numTestsPerEvictionRun()));
+		info.put("connection_pool_min_idle", Double.valueOf(cp.minIdle()));
+		info.put("connection_pool_tests_per_eviction_run", Double.valueOf(cp.numTestsPerEvictionRun()));
 		info.put("connection_pool_time_between_eviction_runs", tsg.toTimespan(cp.timeBetweenEvictionRuns()));
 		info.put("connection_pool_lifo", cp.lifo());
 		info.put("connection_pool_test_on_borrow", cp.testOnBorrow());
@@ -96,8 +96,8 @@ public class MetaUtil {
 		info.put("connection_timeout", tsg.toTimespan(config.connectionTimeout()));
 		info.put("socket_timeout",  tsg.toTimespan(config.socketTimeout()));
 		info.put("force_return_values", config.forceReturnValues());
-		info.put("key_size_estimate", new Double(config.keySizeEstimate()));
-		info.put("value_size_estimate", new Double(config.valueSizeEstimate()));
+		info.put("key_size_estimate", Double.valueOf(config.keySizeEstimate()));
+		info.put("value_size_estimate", Double.valueOf(config.valueSizeEstimate()));
 		info.put("marshaller", config.marshallerClass().getName());
 		info.put("ping_on_startup", config.pingOnStartup());
 		info.put("protocol_version", config.protocolVersion());
